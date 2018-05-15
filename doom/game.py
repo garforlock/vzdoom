@@ -1,6 +1,6 @@
 from doom.doom_trainer import DoomTrainer
 from models.dqn.ai import AI
-from models.dqn.dqn import DQN
+from models.dqn.net import NET
 from models.dqn.nstepprogress import NStepProgress
 from models.dqn.replaymemory import ReplayMemory
 from models.dqn.softmaxbody import SoftmaxBody
@@ -34,7 +34,7 @@ def play_dummy(parameters):
 def play_dqn(parameters):
     trainer = DoomTrainer(parameters)
     trainer.start_game()
-    model = DQN(trainer.num_actions())
+    model = NET(trainer.num_actions())
     softmax_body = SoftmaxBody(T=1)
     ai = AI(brain=model, body=softmax_body)
     n_steps = NStepProgress(trainer, ai, n_step=10)

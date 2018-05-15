@@ -4,10 +4,10 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 
-class DQN(nn.Module):
+class NET(nn.Module):
 
     def __init__(self, number_actions):
-        super(DQN, self).__init__()
+        super(NET, self).__init__()
         self.convolution1 = nn.Conv2d(in_channels=1, out_channels=32, kernel_size=5)
         self.convolution2 = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3)
         self.convolution3 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=2)

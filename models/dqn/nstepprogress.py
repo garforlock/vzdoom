@@ -22,8 +22,6 @@ class NStepProgress:
         state = self.trainer.get_screen()
         history = deque()
         reward = 0.0
-
-        da= state.unsqueeze(0)
         while True:
             action = self.ai(np.array(state.unsqueeze(0)))[0][0]
             next_state, r, is_done, _ = self.env.step(action)
