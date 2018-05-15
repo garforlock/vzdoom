@@ -81,11 +81,13 @@ class DoomTrainer:
 
     def get_screen(self):
 
-        if self.game.get_state() is not None:
-            st = self.game.get_state()
-            screen = st.screen_buffer
-            cv2.imshow('Screen Buffer', screen)
-            return torch.from_numpy(scale(screen, None, None, True))
+        # if self.game.get_state() is not None:
+        #     st = self.game.get_state()
+        #     screen = st.screen_buffer
+        #     cv2.imshow('Screen Buffer', screen)
+        #     return torch.from_numpy(scale(screen, None, None, True))
+
+        return torch.from_numpy(scale(self.game.get_state().screen_buffer, 80, 80, True))
 
     def make_action(self, action):
         reward = self.game.make_action(self.actions[action])
