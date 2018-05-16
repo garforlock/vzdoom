@@ -1,53 +1,54 @@
-import numpy as np
+
+import logging
 import torch
-from torch.autograd import Variable
 import torch.nn as nn
-from models.dqn.ma import MA
-import torch.optim as optim
 
 
-def eligibility_trace(batch, dqn):
-    gamma = 0.99
-    inputs = []
-    targets = []
-    for series in batch:
+from tqdm import trange
 
-        input = Variable(torch.from_numpy(np.array([series[0].state.numpy(), series[-1].state.numpy()], dtype=np.float32)).unsqueeze(1))
-        output = dqn(input)
-        cumul_reward = 0.0 if series[-1].done else output[1].data.max()
+from models.dqn.learn import Learn
+from models.dqn.replaymemory import ReplayMemory
+from test import Net
 
-        for step in reversed(series[:-1]):
-            cumul_reward = step.reward + gamma * cumul_reward
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-        state = series[0].state.numpy()
-        target = output[0].data
-        target[series[0].action] = cumul_reward
-        inputs.append(state)
-        targets.append(target)
-    return torch.from_numpy(np.array(inputs, dtype=np.float32)), torch.stack(targets)
+# Create replay memory which will store the transitions
 
 
-def train(dqn, memory, n_steps):
-    ma = MA(100)
-    loss = nn.MSELoss()
-    optimizer = optim.Adam(dqn.parameters(), lr=0.001)
-    nb_epochs = 100
+def train(params, trainer):
 
-    for epoch in range(1, nb_epochs + 1):
-        #memory.run_steps(200)
-        for batch in memory.sample_batch(128):
-            inputs, targets = eligibility_trace(batch, dqn)
-            inputs, targets = Variable(inputs),  Variable(targets.unsqueeze(1))
-            predictions = dqn(inputs)
-            loss_error = loss(predictions, targets)
-            optimizer.zero_grad()
-            loss_error.backward()
-            optimizer.step()
-        rewards_steps = n_steps.rewards_steps()
-        print("Rewards: %s", str(rewards_steps))
-        ma.add(rewards_steps)
-        avg_reward = ma.average()
-        print("Epoch: %s, Average Reward: %s" % (str(epoch), str(avg_reward)))
-        if avg_reward >= 1500:
-            print("Congratulations, your AI wins")
-            break
+    epochs = 20
+    learning_rate = 0.00025
+    replay_memory_size = 10000
+
+    model = Net(len(trainer.actions))
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.SGD(model.parameters(), learning_rate)
+    memory = ReplayMemory(capacity=replay_memory_size, resolution=(45, 30))
+    batch_size = 64
+    discount_factor = 0.99
+    learn = Learn(trainer, model, criterion, optimizer, memory, batch_size, discount_factor)
+
+
+    for epoch in range(epochs):
+        logger.info('[ ==> Epoch #: %s STARTED  <== ]', epoch)
+        train_episodes_finished = 0
+        train_scores = []
+        trainer.game.new_episode()
+
+        for learning_step in trange(learn.learning_steps_per_epoch, leave=False):
+            learn.perform_learning_step(epoch)
+            if trainer.game.is_episode_finished():
+                score = trainer.game.get_total_reward()
+                train_scores.append(score)
+                trainer.game.new_episode()
+                train_episodes_finished += 1
+
+            print("%d training episodes played." % train_episodes_finished)
+
+
+
+
+
+

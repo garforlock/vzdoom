@@ -1,13 +1,8 @@
 from __future__ import print_function
 import logging
-
 import numpy as np
-import skimage.color, skimage.transform
-
-import torch
 from utils.image_preprocessing import scale
 from vizdoom import *
-import cv2
 
 logging.basicConfig(level=logging.INFO)
 
@@ -83,15 +78,10 @@ class DoomTrainer:
     def new_episode(self):
         self.game.new_episode()
 
-    def get_screen(self):
+    def get_screen(self, width=320, height=240, gray=True):
         screen_buffer = self.game.get_state().screen_buffer
-        cv2.imwrite("screen_buffer.png", screen_buffer)
-        img = scale(screen_buffer, 320, 240, True)
-        cv2.imwrite("img.png", img)
-        # convert to NumPy float32
-        # img = img.astype(np.float32)
-        img = torch.from_numpy(img)
-
+        img = scale(screen_buffer, width, height, gray)
+        img = img.astype(np.float32)
         return img
 
     def make_action(self, action):
