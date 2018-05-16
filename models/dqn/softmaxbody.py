@@ -1,3 +1,5 @@
+import torch
+
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -9,6 +11,7 @@ class SoftmaxBody(nn.Module):
         self.T = T
 
     def forward(self, outputs):
-        probs = F.softmax(outputs * self.T)
-        actions = probs.multinomial()
+        probs = F.softmax(outputs * self.T, dim=1)
+        m = torch.distributions.Categorical(probs)
+        actions = m.sample()
         return actions

@@ -19,6 +19,7 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.autograd import Variable
 from tqdm import trange
+import cv2
 
 # Q-learning settings
 learning_rate = 0.00025
@@ -52,7 +53,9 @@ config_file_path = "scenarios/simpler_basic.cfg"
 
 # Converts and down-samples the input image
 def preprocess(img):
+
     img = skimage.transform.resize(img, resolution)
+
     img = img.astype(np.float32)
     return img
 

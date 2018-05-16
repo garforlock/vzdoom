@@ -11,6 +11,7 @@ class AI:
 
     def __call__(self, inputs):
         input = Variable(torch.from_numpy(np.array(inputs, dtype=np.float32)))
+        input = input.unsqueeze(0)
         output = self.brain(input)
         actions = self.body(output)
         return actions.data.numpy()
