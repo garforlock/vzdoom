@@ -13,7 +13,8 @@ class Learn:
         self.learning_rate = 0.00025
         self.discount_factor = 0.99
         self.epochs = 20
-        self.learning_steps_per_epoch = 2000
+        self.learning_steps_per_epoch = 200
+        self.test_episodes_per_epoch = 100
         self.replay_memory_size = 10000
         self.frame_repeat = 12
         self.resolution = (30, 45)
