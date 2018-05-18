@@ -1,7 +1,5 @@
 from torch import nn
 import torch.nn.functional as F
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 class NET(nn.Module):
@@ -18,7 +16,6 @@ class NET(nn.Module):
         x = F.relu(F.max_pool2d(self.convolution1(x)))
         x = F.relu(F.max_pool2d(self.convolution2(x)))
         count_neurons = x.data.view(1, -1).size(1)
-        logger.info('[ ==> Neuron count : %s <== ]', count_neurons)
         return count_neurons
 
     def forward(self, x):
