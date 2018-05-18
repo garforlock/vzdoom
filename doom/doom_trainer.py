@@ -1,7 +1,7 @@
 from __future__ import print_function
 import logging
 import numpy as np
-from utils.image_preprocessing import scale
+from utils.image_preprocessing import preprocess
 from vizdoom import *
 
 logging.basicConfig(level=logging.INFO)
@@ -49,9 +49,12 @@ class DoomTrainer:
         self.game = DoomGame()
         self.game.load_config(params.config)
 
-        self.game.set_screen_format(ScreenFormat.BGR24)
+        # self.game.set_screen_format(ScreenFormat.BGR24)
+        self.game.set_screen_format(ScreenFormat.GRAY8)
 
-        self.game.set_screen_resolution(ScreenResolution.RES_320X240)
+        # self.game.set_screen_resolution(ScreenResolution.RES_320X240)
+        self.game.set_screen_resolution(ScreenResolution.RES_640X480)
+
         self.game.set_depth_buffer_enabled(True)
         self.game.set_labels_buffer_enabled(True)
 
@@ -79,10 +82,11 @@ class DoomTrainer:
         self.game.new_episode()
 
     def get_screen(self, width=320, height=240, gray=True):
+        # screen_buffer = self.game.get_state().screen_buffer
+        # img = scale(screen_buffer, width, height, gray)
+        # img = img.astype(np.float32)
         screen_buffer = self.game.get_state().screen_buffer
-        img = scale(screen_buffer, width, height, gray)
-        img = img.astype(np.float32)
-        return img
+        return preprocess(screen_buffer)
 
     def make_action(self, action):
         reward = self.game.make_action(self.actions[action])

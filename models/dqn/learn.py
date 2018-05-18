@@ -1,29 +1,44 @@
 import random
 import numpy
 import torch
-import torch.nn as nn
 from torch.autograd import Variable
 from random import randint, random
 
 
 class Learn:
-    def __init__(self, trainer, model, criterion, optimizer, memory, batch_size, discount_factor):
+    def __init__(self,
+                 trainer,
+                 model,
+                 criterion,
+                 optimizer,
+                 memory,
+                 learning_rate=0.00025,
+                 discount_factor=0.99,
+                 epochs=20,
+                 learning_steps_per_epoch=2000,
+                 test_episodes_per_epoch=100,
+                 replay_memory_size=10000,
+                 frame_repeat=12,
+                 resolution=(30, 45),
+                 episodes_to_watch=10,
+                 batch_size=64
+                 ):
+
         self.trainer = trainer
         self.model = model
-        self.learning_rate = 0.00025
-        self.discount_factor = 0.99
-        self.epochs = 20
-        self.learning_steps_per_epoch = 200
-        self.test_episodes_per_epoch = 100
-        self.replay_memory_size = 10000
-        self.frame_repeat = 12
-        self.resolution = (30, 45)
-        self.episodes_to_watch = 10
         self.criterion = criterion
+        self.learning_rate = learning_rate
+        self.discount_factor = discount_factor
+        self.epochs = epochs
+        self.learning_steps_per_epoch = learning_steps_per_epoch
+        self.test_episodes_per_epoch = test_episodes_per_epoch
+        self.replay_memory_size = replay_memory_size
+        self.frame_repeat = frame_repeat
+        self.resolution = resolution
+        self.episodes_to_watch = episodes_to_watch
         self.optimizer = optimizer
         self.memory = memory
         self.batch_size = batch_size
-        self.discount_factor = discount_factor
 
     def learn(self, s1, target_q):
         s1 = torch.from_numpy(s1)

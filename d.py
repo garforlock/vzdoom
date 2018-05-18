@@ -11,5 +11,5 @@ class P:
         self.memory = memory
 
 
-p = P("dqn", "scenarios/basic.cfg", "basic", 10)
+p = P("dqnold", "scenarios/basic.cfg", "basic", 10)
 play(p)
