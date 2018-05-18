@@ -8,7 +8,7 @@ def play(parameters):
     if parameters.model == 'human':
         play_human(parameters)
 
-    elif parameters.model == 'dqnold':
+    elif parameters.model == 'dqn':
         play_dqn(parameters)
     else:
         play_dummy(parameters)
