@@ -52,8 +52,8 @@ class DoomTrainer:
         # self.game.set_screen_format(ScreenFormat.BGR24)
         self.game.set_screen_format(ScreenFormat.GRAY8)
 
-        # self.game.set_screen_resolution(ScreenResolution.RES_320X240)
-        self.game.set_screen_resolution(ScreenResolution.RES_640X480)
+        self.game.set_screen_resolution(ScreenResolution.RES_320X240)
+        # self.game.set_screen_resolution(ScreenResolution.RES_640X480)
 
         self.game.set_depth_buffer_enabled(True)
         self.game.set_labels_buffer_enabled(True)
@@ -74,6 +74,15 @@ class DoomTrainer:
 
     def start_game(self):
         self.game.init()
+
+    def stop_game(self):
+        self.game.close()
+
+    def toogle_visible(self, visible=True):
+        self.game.set_window_visible(visible)
+
+    def set_mode(self, mode=Mode.ASYNC_PLAYER):
+        self.set_mode(mode)
 
     def set_seed(self, seed):
         self.game.set_seed(seed)
